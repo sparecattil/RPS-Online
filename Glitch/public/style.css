@@ -1,0 +1,826 @@
+/* this file is loaded by index.html and styles the page */
+
+* {
+  box-sizing: border-box;
+  font-family: 'Overpass', sans-serif;
+  max-width: 3000px;
+}
+
+body {
+  line-height: 1.5em;
+  z-index: 998;
+}
+
+.getStarted {
+  display: block;
+  font-weight: bold;
+  text-align: center;
+  color: white;
+  margin-top: 50px;
+  font-size: 90px;
+}
+
+.loginButton {
+  display: block;
+  text-align: center;
+  margin: auto;
+  margin-bottom: 10px;
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+.loginFailText {
+  display: block;
+  text-align: center;
+  margin: auto;
+  color: red;
+  margin-bottom: 10px;
+  margin-top: 10px;
+}
+
+.popup {
+  display: block;
+  border-radius: .5em;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 20px;
+  border: 1px solid black;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  }
+
+.popup h2 {
+  font-size: 40px;
+  color: white;
+  font-size: 40px;
+  color: black;
+}
+
+.popup button {
+  display: block;
+  text-align: center;
+  margin: auto;
+  font-weight: bold;
+}
+
+.overlay {
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* semi-transparent black */
+  z-index: 999; /* Ensure overlay is on top of other content */
+}
+
+.picture {
+  display: block;
+  max-width: 50%;
+  max-height: 300px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 30px;
+  margin-top: 10px;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.containerDelete {
+  display: inline-block;
+  flex-direction: column;
+}
+
+.container-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.textBoxUsername {
+  display: inline-block;
+  width: 200px;
+  border-radius: 10px;
+  padding: 2px 5px;
+  border: 1px solid black; 
+  margin: 0px 0px 20px 10px;
+}
+
+.textBoxPasswordNew{
+  display: inline-block;
+  width: 200px;
+  border-radius: 10px;
+  padding: 2px 5px;
+  border: 1px solid black; 
+  margin: 0px 0px 20px 8px;
+}
+
+.textBoxPassword {
+  display: inline-block;
+  width: 200px;
+  border-radius: 10px;
+  padding: 2px 5px;
+  border: 1px solid black; 
+  margin: 0px 0px 20px 10px;
+}
+
+.password-username {
+  color: black;
+  text-align: center;
+  margin: auto;
+  line-height: 1.1;
+  font-weight: bold;
+}
+
+.password-username-again {
+  color: white;
+  text-align: center;
+  margin: auto;
+  line-height: 1.1;
+  font-weight: bold;
+}
+.password-username-new {
+  color: white;
+  text-align: center;
+  margin: auto;
+  margin-left: 37px;
+  line-height: 1.1;
+  font-weight: bold;
+}
+
+.hideElement {
+  display: none;
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+}
+
+.webcam-label-container {
+  justify-content: center;
+}
+
+.login-register {
+  display: inline-block;
+  margin: 10px 10px;
+  background-color: white;
+  border: 1px solid currentColor;
+  border-radius: .5em;
+  cursor: pointer;
+  font-size: inherit;
+  line-height: 1em;
+  padding: 0.25em .75em;
+  max-width: 20ch;
+  font-weight: bold;
+}
+
+.delete {
+  display: inline-block;
+  margin: 10px 10px;
+  background-color: white;
+  border: 1px solid currentColor;
+  border-radius: .5em;
+  cursor: pointer;
+  font-size: inherit;
+  line-height: 1em;
+  padding: 0.25em .75em;
+  max-width: 20ch;
+  font-weight: bold;
+}
+
+.cancelDelete {
+  display: none;
+  margin: 10px 10px;
+  background-color: white;
+  border: 1px solid currentColor;
+  border-radius: .5em;
+  cursor: pointer;
+  font-size: inherit;
+  line-height: 1em;
+  padding: 0.25em .75em;
+  max-width: 20ch;
+  font-weight: bold;
+}
+
+.confirmDelete {
+  display: none;
+  margin: 10px 10px;
+  background-color: white;
+  border: 1px solid currentColor;
+  border-radius: .5em;
+  cursor: pointer;
+  font-size: inherit;
+  line-height: 1em;
+  padding: 0.25em .75em;
+  max-width: 20ch;
+  font-weight: bold;
+}
+
+.login-register:hover {
+  background-color: lightgrey;
+}
+
+.singleButton {
+  display: inline-block;
+  margin: 10px 10px;
+  background-color: white;
+  border: 1px solid currentColor;
+  border-radius: .5em;
+  cursor: pointer;
+  font-size: inherit;
+  line-height: 1em;
+  padding: 0.5em 1em;
+  font-weight: bold;
+}
+
+.singleleaveButton {
+  display: inline-block;
+  margin: 10px 10px;
+  background-color: white;
+  border: 1px solid currentColor;
+  border-radius: .5em;
+  cursor: pointer;
+  font-size: inherit;
+  line-height: 1em;
+  padding: 0.5em 1em;
+  font-weight: bold;
+}
+
+form {
+  background-color: #eeeeee;
+  display: grid;
+  grid-gap: 1em;
+  padding: 1em;
+  max-width: 40ch;
+}
+
+input {
+  border: 1px solid silver;
+  display: block;
+  font-size: 16px;
+  margin-bottom: 10px;
+  padding: 5px;
+  width: 100%;
+}
+
+form button {
+  background-color: #bbbbf2;
+  border: 2px solid currentColor;
+  border-radius: .25em;
+  cursor: pointer;
+  font-size: inherit;
+  line-height: 1.4em;
+  padding: 0.25em 1em;
+  max-width: 20ch;
+}
+
+form button:hover {
+  background-color: lavender;
+}
+
+footer {
+  margin-top: 3em;
+  padding-top: 1.5em;
+  border-top: 1px solid lightgrey;
+}
+
+.background {
+    width: 100%;
+    height: 100vh;
+    background: linear-gradient(180deg, #182e7a, lightblue, white);
+    clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+}
+
+.site-header {
+  width: 100%;
+  height: 10%;
+  top: 0;
+}
+
+nav {
+  margin: 0;
+  width:100%;
+  height: 100px;
+  display: flex;
+  color: white;
+  position: fixed;
+  z-index: 100000;
+  top: 0;
+}
+
+.webTitle {
+  width: 50%;
+  height: 100px;
+}
+.webTitle h1 {
+  line-height: 100px;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  padding-right: 0px;
+  padding-left: 30px;
+}
+
+.webTitle h1 .greenFormat {
+  text-shadow: 0 0 5px green,  /* Inner shadow */
+               0 0 10px green, /* Inner shadow */
+               0 0 15px green; /* Outer shadow */
+}
+
+.menu {
+  width: 50%;
+  height: 100%;
+}
+.menu ul {
+  width: 100%;
+  height: 100px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  padding-right: 60px;
+}
+
+.menu ul a {
+    list-style: none;
+    font-size: 12px;
+    font-weight: bold;
+    text-transform: uppercase;
+    position: relative;
+    text-decoration: none;
+    color: white;
+}
+
+.menu ul a:before {
+    content: "";
+    position: absolute;
+    top: 110%;
+    left: 0;
+    width: 0;
+    height: 2px;
+    border-bottom: 2px solid #dea916;
+    transition: all 0.4s linear;
+}
+
+.menu ul a:hover:before {
+    width: 100%;
+}
+.menu ul a:hover {
+    color: #dea916;
+}
+
+.welcomeTitle {
+  display: block;
+  font-weight: bold;
+  color: white;
+  margin-top: 40px;
+  padding-left: 45px;
+  padding-top: 50px;
+  font-size: 70px;
+  top: 0;
+}
+
+.gameTitle {
+  display: block;
+  font-weight: bold;
+  color: white;
+  margin-top: 40px;
+  padding-top: 0px;
+  font-size: 50px;
+  top: 0;
+}
+
+.gameText {
+  display: block;
+  font-weight: bold;
+  color: white;
+  margin-top: 40px;
+  padding-top: 0px;
+  font-size: 30px;
+  top: 0;
+}
+
+.gameTextWait {
+  display: block;
+  font-weight: bold;
+  color: white;
+  margin-top: 30px;
+  padding-top: 0px;
+  font-size: 30px;
+  top: 0;
+}
+
+.wrapper {
+  text-align: center;
+  padding-top: 50px;
+}
+
+.wrapperTwo {
+  text-align: center;
+  padding-top: 50px;
+}
+
+.wrapperThree {
+  text-align: center;
+  padding-top: 30px;
+}
+
+.boxAccount {
+  text-align: center;
+  border-radius: .5em;
+  display: inline-block;
+  background-color: black;
+  opacity: .5;
+  margin: 0px 15px 0px 25px;
+  width: 400px;
+  height: 275px;
+}
+
+.deleteAccount{
+  text-align: center;
+  border-radius: .5em;
+  display: inline-block;
+  background-color: black;
+  opacity: .5;
+  margin: 0px 15px 0px 25px;
+  width: 300px;
+  height: 140px;
+}
+  
+.boxAccount h1, .deleteAccount h1 {
+  font-size: 40px;
+  color: white;
+}
+
+.boxPlayed, .boxWinRate, .boxMostUsed, .boxLeastUsed, .boxRank {
+  border-radius: .5em;
+  display: inline-block;
+  background-color: black;
+  opacity: .5;
+  margin: 0px 15px 0px 25px;
+  width: 150px;
+  height: 150px;
+}
+
+.boxWins {
+  border-radius: .5em;
+  display: inline-block;
+  background-color: black;
+  opacity: .5;
+  margin: 0px 15px 0px 25px;
+  width: 150px;
+  height: 150px;
+  border: 1px solid #9aff9a;
+  box-shadow: 0 0 10px #9aff9a;
+}
+
+.boxLosses {
+  border-radius: .5em;
+  display: inline-block;
+  background-color: black;
+  opacity: .5;
+  margin: 0px 15px 0px 25px;
+  width: 150px;
+  height: 150px;
+  border: 1px solid #ff9999;
+  box-shadow: 0 0 10px #ff9999;
+}
+
+.boxWins h1, .boxLosses h1, .boxPlayed h1, .boxWinRate h1, .boxMostUsed h1, .boxLeastUsed h1, .boxRank h1 {
+  font-size: 25px;
+  color: white;
+}
+
+.boxWins p, .boxLosses p, .boxPlayed p, .boxWinRate p, .boxMostUsed p, .boxLeastUsed p {
+  margin-left: 0;
+  margin-top: 50px;
+  font-size: 80px;
+  color: white;
+}
+
+.boxWins p {
+  color: green;
+  opacity: 0.8;
+}
+
+.boxLosses p {
+  color: Red;
+  opacity: .8;
+}
+
+.boxRank p {
+  margin-top: 50px;
+  font-size: 80px;
+  color: white;
+}
+
+.boxLeaderboard {
+  border-radius: .5em;
+  display: inline-block;
+  background-color: black;
+  opacity: .5;
+  margin: 0px 15px 0px 30px;
+  width: 650px;
+  height:450px;
+  overflow: auto;
+}
+
+.boxLeaderboard h1 {
+  font-size: 25px;
+  color: white;
+}
+
+.boxH2P h1, .boxPlay h1, .boxStats h1 {
+  font-size: 50px;
+  color: white;
+}
+
+.boxH2P p, .boxPlay p, .boxStats p {
+  margin-left: 5px;
+  margin-right: 5px;
+  margin-top: 50px;
+  font-size: 25px;
+  color: white;
+}
+
+.boxH2P {
+  border-radius: .5em;
+  display: inline-block;
+  background-color: black;
+  opacity: .5;
+  margin: 0px 15px 0px 45px;
+  width: 650px;
+  height: 450px;
+  overflow: auto;
+}
+
+.boxPlay, .boxStats {
+  border-radius: .5em;
+  display: inline-block;
+  background-color: black;
+  opacity: .5;
+  margin: 0px 15px 0px 45px;
+  width: 650px;
+  height: 450px;
+  overflow: auto;
+}
+
+.player {
+  display: block;
+  margin: 0; 
+  padding: 5px 0; 
+  color: white;
+}
+
+.line {
+  margin: 5px auto;
+  border: none; 
+  border-top: 1px solid white;
+  width: 400px;
+}
+
+.rank {
+  position: inline;
+  left: 0; 
+  padding-right: 5px; 
+  color: white;
+}
+
+.rankFirst {
+  position: inline;
+  left: 0; 
+  padding-right: 5px; 
+  color: gold;
+}
+
+.rankSecond {
+  position: inline;
+  left: 0; 
+  padding-right: 5px; 
+  color: silver;
+}
+
+.rankThird {
+  position: inline;
+  left: 0; 
+  padding-right: 5px; 
+  color: #cd7f32;
+}
+
+.boxStatistics {
+  border-radius: .5em;
+  display: inline-block;
+  background-color: black;
+  opacity: .5;
+  margin: 0px 15px 0px 130px;
+  width: 650px;
+  height: 500px;
+  overflow: auto;
+}
+
+.boxStatistics h1 {
+  font-size: 25px;
+  color: white;
+}
+
+.boxLeaderBoardStatistics {
+  border-radius: .5em;
+  display: inline-block;
+  background-color: black;
+  opacity: .5;
+  margin: 0px 10px 0px 0px;
+  margin-bottom: 10px;
+  width: 90px;
+  height: 90px;
+  border: 1px solid #9aff9a;
+  box-shadow: 0 0 10px #9aff9a;
+}
+
+.boxLeaderBoardStatistics h1 {
+  font-size: 14px;
+  color: white;
+}
+
+.boxLeaderBoardStatistics h2 {
+  font-size: 22px;
+  color: white;
+}
+
+.boxLeaderBoardStatistics p {
+  font-size: 10px;
+  color: white;
+}
+
+.boxHolder {
+  margin-bottom: 10px;
+}
+
+.fireText {
+  justify-content: center;
+  align-items: center;
+}
+
+.fireText h1 {
+  font-size: 50px;
+  color: #ffffff;
+  text-shadow: 0 3px 20px red,
+  0 0 20px red,
+  0 0 10px orange,
+  4px -5px 6px yellow,
+  -4px -10px 10px yellow,
+  0 -10px 30px yellow;
+  animation: fire 2s infinite alternate linear;
+}
+
+@keyframes fire {
+  0% {
+    text-shadow: 0 3px 20px red,
+                 0 0 20px red,
+                 0 0 10px orange,
+                 4px -5px 6px yellow,
+                 -4px -10px 10px yellow,
+                 0 -10px 30px yellow;
+  }
+  25% {
+    text-shadow: 0 3px 20px red,
+                 0 0 20px red,
+                 0 0 10px orange,
+                 -2px -5px 5px yellow,
+                 3px -10px 10px yellow,
+                 -4 -15px 20px yellow;
+  }
+  50% {
+    text-shadow: 0 3px 20px red,
+                 0 0 20px red,
+                 0 -5px 10px orange,
+                 3px -10px 10px yellow,
+                 -4px -15px 20px yellow,
+                 2px -20px 30px yellow;
+  }
+  75% {
+    text-shadow: 0 3px 20px red,
+                 0 0 20px red,
+                 0 -5px 10px orange,
+                 3px -10px 5px yellow,
+                 2px -20px 30px yellow,
+                 0 -25px 40px yellow;
+  }
+  100% {
+    text-shadow: 0 3px 20px red,
+                 0 0 10px red,
+                 0 0 0 orange,
+                 0 0 5px yellow,
+                 -2px -5px 5px yellow,
+                 4px -10px 10px yellow;
+  }
+}
+
+.greenFireText {
+  justify-content: center;
+  align-items: center;
+}
+
+.greenFireText h1 {
+  font-size: 50px;
+  color: #ffffff;
+  text-shadow: 0 3px 20px red,
+  0 0 20px red,
+  0 0 10px orange,
+  4px -5px 6px yellow,
+  -4px -10px 10px yellow,
+  0 -10px 30px yellow;
+  animation: greenFire 2s infinite alternate linear;
+}
+
+@keyframes greenFire {
+  0% {
+    text-shadow: 0 3px 20px green,
+                 0 0 20px green,
+                 0 0 10px lime,
+                 4px -5px 6px yellowgreen,
+                 -4px -10px 10px yellowgreen,
+                 0 -10px 30px yellowgreen;
+  }
+  25% {
+    text-shadow: 0 3px 20px green,
+                 0 0 20px green,
+                 0 0 10px lime,
+                 -2px -5px 5px yellowgreen,
+                 3px -10px 10px yellowgreen,
+                 -4 -15px 20px yellowgreen;
+  }
+  50% {
+    text-shadow: 0 3px 20px green,
+                 0 0 20px green,
+                 0 -5px 10px lime,
+                 3px -10px 10px yellowgreen,
+                 -4px -15px 20px yellowgreen,
+                 2px -20px 30px yellowgreen;
+  }
+  75% {
+    text-shadow: 0 3px 20px green,
+                 0 0 20px green,
+                 0 -5px 10px lime,
+                 3px -10px 5px yellowgreen,
+                 2px -20px 30px yellowgreen,
+                 0 -25px 40px yellowgreen;
+  }
+  100% {
+    text-shadow: 0 3px 20px green,
+                 0 0 10px green,
+                 0 0 0 lime,
+                 0 0 5px yellowgreen,
+                 -2px -5px 5px yellowgreen,
+                 4px -10px 10px yellowgreen;
+  }
+}
+
+
+.menuTmp {
+  width: 200%;
+  height: 100%;
+}
+.menuTmp ul {
+  width: 100%;
+  height: 100px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  padding-right: 60px;
+}
+
+.menuTmp ul a {
+    list-style: none;
+    font-size: 12px;
+    font-weight: bold;
+    text-transform: uppercase;
+    position: relative;
+    text-decoration: none;
+    color: white;
+}
+
+.menuTmp ul a:before {
+    content: "";
+    position: absolute;
+    top: 110%;
+    left: 0;
+    width: 0;
+    height: 2px;
+    border-bottom: 2px solid #dea916;
+    transition: all 0.4s linear;
+}
+
+.menuTmp ul a:hover:before {
+    width: 100%;
+}
+.menuTmp ul a:hover {
+    color: #dea916;
+}

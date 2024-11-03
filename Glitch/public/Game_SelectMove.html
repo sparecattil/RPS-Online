@@ -1,0 +1,151 @@
+<!-- This is a static file -->
+<!-- served from your routes in server.js -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>RPS Online - Login</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="A cool thing made with Glitch" />
+    <link
+      id="favicon"
+      rel="icon"
+      href="https://cdn.glitch.global/4da04694-6b54-466e-a058-2a6f0886da40/RPS.png?v=1713324675470"
+      type="image/x-icon"
+    />
+
+    <!-- import the webpage's stylesheet -->
+    <link rel="stylesheet" href="/style.css" />
+    <!-- import the webpage's client-side javascript file -->
+    <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"></script>
+    <script src="/script.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Overpass&display=swap">
+  </head>
+  <body class = "background" style="overflow: hidden">
+    <header class = "site-header">
+            <nav>
+                <div class = "logo">
+                </div>
+                <div class = "webTitle">
+                  <h1>RPS <span class="greenFormat">ONLINE</span></h1>
+                </div>
+                <div class = "menu">
+                </div> 
+             </nav>
+    </header>
+    <main>
+      <section>
+        <div class = "gameTitle" id = "headerText" style = "text-align: center;">Make Your Move</div>
+        <div class = "gameText" id = "timer" style = "text-align: center;">Time Remaining: 5</div>
+      </section>
+    </main>
+    <div class="container-container">
+      <div class="webcam-label-container">
+        <div id="webcam-container"></div>
+        <div id="label-container" style="text-align: center;"></div>
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
+    <script type="text/javascript">
+      let model, webcam, labelContainer, maxPredictions;
+      let highestPrediction = null;
+      let highestProbability = 0;
+      
+      async function init() {
+        const URL = "https://teachablemachine.withgoogle.com/models/liJQr7bzC/";
+        const modelURL = URL + "model.json";
+        const metadataURL = URL + "metadata.json";
+
+        model = await tmImage.load(modelURL, metadataURL);
+        maxPredictions = model.getTotalClasses();
+
+        const flip = true;
+        webcam = new tmImage.Webcam(300, 300, flip);
+        await webcam.setup();
+        await webcam.play();
+        window.requestAnimationFrame(loop);
+
+        document.getElementById("webcam-container").appendChild(webcam.canvas);
+        labelContainer = document.getElementById("label-container");
+        for (let i = 0; i < maxPredictions; i++) {
+          labelContainer.appendChild(document.createElement("div"));
+        }
+
+        // Start the countdown timer
+        startTimer(5);
+        document.getElementById("leastUsedPick").style.display = "block";
+        document.getElementById("mostUsedPick").style.display = "block";
+      }
+
+      function startTimer(duration) {
+        let timer = duration;
+        const timerElement = document.getElementById("timer");
+
+        const countdown = setInterval(function () {
+          timerElement.textContent = `Time Remaining: ${timer}`;
+          if (--timer < 0) {
+            clearInterval(countdown);
+            timerElement.textContent = "Time's up!";
+            stopWebcamAndModel();
+          }
+        }, 1000);
+      }
+
+      async function loop() {
+        webcam.update();
+        const prediction = await model.predict(webcam.canvas);
+
+        for (let i = 0; i < maxPredictions; i++) {
+          const classPrediction = prediction[i].className;
+          const probability = prediction[i].probability.toFixed(2);
+
+          if (probability >= highestProbability) {
+            highestPrediction = classPrediction;
+            highestProbability = probability;
+          }
+
+          // Display prediction chances for debugging
+          //labelContainer.childNodes[i].innerHTML = `${classPrediction}: ${probability}`;
+        }
+
+        // Request next animation frame only if the model is still active
+        if (model) {
+          window.requestAnimationFrame(loop);
+        }
+      }
+
+      function stopWebcamAndModel() {
+        webcam.stop();
+        model = null;
+
+        // Display predicted label after model stops
+        const predictedLabel = document.createElement("div");
+        predictedLabel.innerHTML = `Predicted: ${highestPrediction}`;
+        document.getElementById("label-container").appendChild(predictedLabel);
+        localStorage.setItem("userPick", highestPrediction);
+        toConfirmMove();
+      }
+    </script>
+    <section>
+      <div class = "gameText" id = "leastUsedPick" style = "text-align: center; display: none; -webkit-text-stroke: 0.25px black;">
+        Opponent's Least Used Pick:
+      </div>
+      <div class = "gameText" id = "mostUsedPick" style = "text-align: center; display: none; -webkit-text-stroke: 0.25px black;">
+        Opponent's Most Used Pick:
+      </div>
+    </section>
+    <script type="text/javascript">
+      var mostUsedPick = localStorage.getItem("opponentMost");
+      var mostUsedElement = document.getElementById("mostUsedPick");
+      mostUsedElement.textContent += " " + mostUsedPick;
+      
+      var leastUsedPick = localStorage.getItem("opponentLeast");
+      var leastUsedElement = document.getElementById("leastUsedPick");
+      leastUsedElement.textContent += " " + leastUsedPick;
+      
+      init();
+    </script>
+  </body>
+</html>

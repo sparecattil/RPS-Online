@@ -1,0 +1,209 @@
+<!-- This is a static file -->
+<!-- served from your routes in server.js -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>RPS Online - Login</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="A cool thing made with Glitch" />
+    <link
+      id="favicon"
+      rel="icon"
+      href="https://cdn.glitch.global/4da04694-6b54-466e-a058-2a6f0886da40/RPS.png?v=1713324675470"
+      type="image/x-icon"
+    />
+
+    <!-- import the webpage's stylesheet -->
+    <link rel="stylesheet" href="/style.css" />
+    <!-- import the webpage's client-side javascript file -->
+    <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"></script>
+    <script src="/script.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Overpass&display=swap">
+  </head>
+  <body class = "background" style="overflow: hidden">
+    <header class = "site-header">
+            <nav>
+                <div class = "logo">
+                </div>
+                <div class = "webTitle">
+                    <h1>RPS <span class="greenFormat">ONLINE</span></h1>
+                </div>
+                <div class = "menu">
+                    <ul>
+                        <li><a href="Login.html" id="registerLogin">Log Out</a></li>
+                        <li><a href="Dashboard.html" id="dashboard">My Dashboard</a></li>
+                        <li><a href="Play.html" id="play">Play Now</a></li>
+                        <li><a href="HowToPlay.html" id="howToPlay">How to Play</a></li>
+                    </ul>
+                </div> 
+             </nav>
+    </header>
+    <main>
+      <section>
+        <div class = "welcomeTitle" id = "welcome"></div>
+          <script>
+            const div = document.getElementById("welcome");
+            const text = "Leaderboards & Statistics";
+            typeWriter(div, text);
+          </script>
+        <div class = "wrapperTwo">
+          <div class = "box boxPlay" id = "rankings">
+            <h1>National Rankings</h1>
+            <div class="player"><span class="rankFirst">1.</span><span id="player1"></span></div>
+            <div class="line"></div>
+            <div class="player"><span class="rankSecond">2.</span><span id="player2"></span></div>
+            <div class="line"></div>
+            <div class="player"><span class="rankThird">3.</span><span id="player3"></span></div>
+            <div class="line"></div>
+          </div>
+          <script type="text/javascript">
+            var rankNames = localStorage.getItem("rankNames");
+            var trim = rankNames.substring(1).replace(/null/g, '').replace(/,,/g, ',').trim(); // Remove "null" and consecutive commas
+            var split = trim.split(",").filter(Boolean); 
+            var numRanks = parseInt(localStorage.getItem("numRanks")) + 1;
+            
+            for (let i = 0; i < (numRanks - 1); i++) {
+              var playerNum = "player" + (i + 1);
+              if (i < 3) {
+                var playerNameElement = document.getElementById(playerNum);
+                playerNameElement.textContent = split[i];
+              }
+              else {
+                var dynamicPlayerDiv = document.createElement('div');
+                dynamicPlayerDiv.className = 'player';
+                dynamicPlayerDiv.textContent = (i + 1) + ". " + split[i];
+                document.getElementById('rankings').appendChild(dynamicPlayerDiv);
+                var dynamicLineDiv = document.createElement('div');
+                dynamicLineDiv.className = 'line';
+                document.getElementById('rankings').appendChild(dynamicLineDiv);
+                }
+            }
+          </script>
+          <div class = "box boxStats">
+            <h1>Top Player Statistics</h1>
+            <p id="userOne"></p>
+            <div class = "box boxHolder">
+              <div class = "box boxLeaderBoardStatistics">
+                <h1>Wins</h1>
+                <h2 id="oneWins"></h2>
+              </div>
+              <div class = "box boxLeaderBoardStatistics">
+                <h1>Played</h1>
+                <h2 id="onePlayed"></h2>
+              </div>
+              <div class = "box boxLeaderBoardStatistics">
+                <h1>Win Rate</h1>
+                <h2 id="oneWinRate"></h2>
+              </div>
+            </div>
+            <div class = "boxHolder">
+              <div class = "box boxLeaderBoardStatistics">
+                <h1>Most Used</h1>
+                <h2 id="oneMost"></h2>
+              </div>
+              <div class = "box boxLeaderBoardStatistics">
+                <h1>Least Used</h1>
+                <h2 id="oneLeast"></h2>
+              </div>
+              <div class = "box boxLeaderBoardStatistics">
+                <h1>Rank</h1>
+                <h2 id="oneRank"></h2>
+              </div>
+            </div>
+            <div class="line"></div>
+            <p id="userTwo"></p>
+            <div class = "box boxHolder">
+              <div class = "box boxLeaderBoardStatistics">
+                <h1>Wins</h1>
+                <h2 id="twoWins"></h2>
+              </div>
+              <div class = "box boxLeaderBoardStatistics">
+                <h1>Played</h1>
+                <h2 id="twoPlayed"></h2>
+              </div>
+              <div class = "box boxLeaderBoardStatistics">
+                <h1>Win Rate</h1>
+                <h2 id="twoWinRate"></h2>
+              </div>
+            </div>
+            <div class = "boxHolder">
+              <div class = "box boxLeaderBoardStatistics">
+                <h1>Most Used</h1>
+                <h2 id="twoMost"></h2>
+              </div>
+              <div class = "box boxLeaderBoardStatistics">
+                <h1>Least Used</h1>
+                <h2 id="twoLeast"></h2>
+              </div>
+              <div class = "box boxLeaderBoardStatistics">
+                <h1>Rank</h1>
+                <h2 id="twoRank"></h2>
+              </div>
+            </div>
+            <div class="line"></div>
+            <p id="userThree"></p>
+            <div class = "box boxHolder">
+              <div class = "box boxLeaderBoardStatistics">
+                <h1>Wins</h1>
+                <h2 id="threeWins"></h2>
+              </div>
+              <div class = "box boxLeaderBoardStatistics">
+                <h1>Played</h1>
+                <h2 id="threePlayed"></h2>
+              </div>
+              <div class = "box boxLeaderBoardStatistics">
+                <h1>Win Rate</h1>
+                <h2 id="threeWinRate"></h2>
+              </div>
+            </div>
+            <div class = "boxHolder">
+              <div class = "box boxLeaderBoardStatistics">
+                <h1>Most Used</h1>
+                <h2 id="threeMost"></h2>
+              </div>
+              <div class = "box boxLeaderBoardStatistics">
+                <h1>Least Used</h1>
+                <h2 id="threeLeast"></h2>
+              </div>
+              <div class = "box boxLeaderBoardStatistics">
+                <h1>Rank</h1>
+                <h2 id="threeRank"></h2>
+              </div>
+            </div>
+            <div class="line"></div>
+          </div>
+          <script type="text/javascript">
+            document.getElementById('userOne').textContent = localStorage.getItem("oneUser");
+            document.getElementById('oneWins').textContent = localStorage.getItem("oneWins");
+            document.getElementById('onePlayed').textContent = localStorage.getItem("oneTotal");
+            document.getElementById('oneWinRate').textContent = localStorage.getItem("oneWinRate");
+            document.getElementById('oneMost').textContent = localStorage.getItem("oneMost");
+            document.getElementById('oneLeast').textContent = localStorage.getItem("oneLeast");
+            document.getElementById('oneRank').textContent = localStorage.getItem("oneRank");
+            document.getElementById('oneRank').textContent = localStorage.getItem("oneRank");
+            
+            document.getElementById('userTwo').textContent = localStorage.getItem("twoUser");
+            document.getElementById('twoWins').textContent = localStorage.getItem("twoWins");
+            document.getElementById('twoPlayed').textContent = localStorage.getItem("twoTotal");
+            document.getElementById('twoWinRate').textContent = localStorage.getItem("twoWinRate");
+            document.getElementById('twoMost').textContent = localStorage.getItem("twoMost");
+            document.getElementById('twoLeast').textContent = localStorage.getItem("twoLeast");
+            document.getElementById('twoRank').textContent = localStorage.getItem("twoRank");
+            document.getElementById('twoRank').textContent = localStorage.getItem("twoRank");
+            
+            document.getElementById('userThree').textContent = localStorage.getItem("threeUser");
+            document.getElementById('threeWins').textContent = localStorage.getItem("threeWins");
+            document.getElementById('threePlayed').textContent = localStorage.getItem("threeTotal");
+            document.getElementById('threeWinRate').textContent = localStorage.getItem("threeWinRate");
+            document.getElementById('threeMost').textContent = localStorage.getItem("threeMost");
+            document.getElementById('threeLeast').textContent = localStorage.getItem("threeLeast");
+            document.getElementById('threeRank').textContent = localStorage.getItem("threeRank");
+            document.getElementById('threeRank').textContent = localStorage.getItem("threeRank");
+          </script>
+        </div>  
+      </section>
+    </main>
+  </body>
+</html>

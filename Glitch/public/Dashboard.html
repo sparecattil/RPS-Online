@@ -1,0 +1,142 @@
+<!-- This is a static file -->
+<!-- served from your routes in server.js -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>RPS Online - Login</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="A cool thing made with Glitch" />
+    <link
+      id="favicon"
+      rel="icon"
+      href="https://cdn.glitch.global/4da04694-6b54-466e-a058-2a6f0886da40/RPS.png?v=1713324675470"
+      type="image/x-icon"
+    />
+
+    <!-- import the webpage's stylesheet -->
+    <link rel="stylesheet" href="/style.css" />
+    <!-- import the webpage's client-side javascript file -->
+    <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"></script>
+    <script src="/script.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Overpass&display=swap">
+  </head>
+  <body class = "background" style="overflow: hidden">
+    <header class = "site-header">
+            <nav>
+                <div class = "logo">
+                </div>
+                <div class = "webTitle">
+                    <h1>RPS <span class="greenFormat">ONLINE</span></h1>
+                </div>
+                <div class = "menu">
+                    <ul>
+                        <li><a href="Login.html" id="registerLogin">Log Out</a></li>
+                        <li><a href="Leaderboard.html" id="leaderboard">LeaderBoard</a></li>
+                        <li><a href="Play.html" id="play">Play Now</a></li>
+                        <li><a href="HowToPlay.html" id="howToPlay">How to Play</a></li>
+                    </ul>
+                </div> 
+             </nav>
+    </header>
+    <main>
+      <section>
+        <div class = "welcomeTitle" id = "welcome"></div>
+         
+        <div class = "wrapper">
+          <div class = "box boxWins">
+            <h1>Wins</h1>
+            <p id="userWins"></p>
+          </div>
+          <div class = "box boxLosses">
+            <h1>Loss</h1>
+            <p id="userLoss"></p>
+          </div>
+          <div class = "box boxPlayed">
+            <h1>Played</h1>
+            <p id="userPlayed"></p>
+          </div>
+          <div class = "box boxWinRate">
+            <h1>Win Rate (%)</h1>
+            <p id="userWinRate"></p>
+          </div>
+          <div class = "box boxMostUsed">
+            <h1>Most Used</h1>
+            <p id="mostUsed"></p>
+          </div>
+          <div class = "box boxLeastUsed">
+            <h1>Least Used</h1>
+            <p id="leastUsed"></p>
+          </div>
+          <div class = "box boxRank">
+            <h1>Rank</h1>
+            <p id="userRank"></p>
+          </div>
+        </div>
+          <div class = "wrapperThree">
+            <div class = "box boxAccount">
+              <h1>Change Password</h1>
+              <div class="container">
+                <div>
+                  <label class = "password-username-new" id="passLabel">NEW PASSWORD:</label>
+                  <input type="password" id="passLabelNew" class="textBoxPasswordNew">
+                </div>
+      
+                <div>
+                  <label class = "password-username-again" id="passLabels" >CONFIRM PASSWORD:</label>
+                  <input type="password" id="passLabelConfirm" class="textBoxPassword">
+                </div>
+                <div class = "loginFailText hideElement" id="failText">Incorrect Username or Password!</div>
+                <div class = "loginFailText hideElement" id="failTextUser">Username Not Found!</div>
+                <div class = "loginFailText hideElement" id="failTextTaken">Username Already Taken!</div>
+                <div class = "loginFailText hideElement" id="failTextLength">Password Must Be 7 Characters!</div>
+                <div class = "loginFailText hideElement" id="failTextCharacters">Password Missing Uppercase/Special Characters!</div>
+                <div class = "loginFailText hideElement" id="failTextMatch">Passwords Did Not Match!</div>
+                <div class = "loginFailText hideElement" id="failTextSuccess">Password Changed!</div>
+                <div>
+                  <button class="login-register" id = "registerLabel" onclick="sendPassword()">Confirm</button>
+                </div>
+              </div>
+            </div>
+            <div class =" box deleteAccount">
+              <h1>Delete Account</h1>
+              <div class="container">
+                <div>
+                  <button class="delete" id = "deleteAccountButton" onclick="startDelete()">Delete Account</button>
+                  <button class="cancelDelete" id = "cancelDeleteButton" onclick="cancelDelete()">Cancel</button>
+                  <button class="confirmDelete" id = "confirmDeleteButton" onclick="deleteAccount()">Confirm</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    <script>
+      const userWinsText = document.getElementById("userWins");
+      userWinsText.textContent = localStorage.getItem("userWins");
+      
+      const userLossText = document.getElementById("userLoss");
+      userLossText.textContent = localStorage.getItem("userLoss");
+      
+      const userPlayedText = document.getElementById("userPlayed");
+      userPlayedText.textContent = localStorage.getItem("userPlayed");
+      
+      const userWinRateText = document.getElementById("userWinRate");
+      userWinRateText.textContent = localStorage.getItem("userWinRate");
+      
+      const userMostUsedText = document.getElementById("mostUsed");
+      userMostUsedText.textContent = localStorage.getItem("mostUsed");
+      
+      const userLeastUsedText = document.getElementById("leastUsed");
+      userLeastUsedText.textContent = localStorage.getItem("leastUsed");
+      
+      const userRankParagraph = document.getElementById("userRank");
+      userRankParagraph.textContent = localStorage.getItem("userRank");
+      
+      const div = document.getElementById("welcome");
+      const text = localStorage.getItem("username") + "'s Statistics";
+      typeWriter(div, text);
+    </script>
+  </body>
+</html>

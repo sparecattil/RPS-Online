@@ -1,0 +1,73 @@
+<!-- This is a static file -->
+<!-- served from your routes in server.js -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>RPS Online - Login</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="A cool thing made with Glitch" />
+    <link
+      id="favicon"
+      rel="icon"
+      href="https://cdn.glitch.global/4da04694-6b54-466e-a058-2a6f0886da40/RPS.png?v=1713324675470"
+      type="image/x-icon"
+    />
+
+    <!-- import the webpage's stylesheet -->
+    <link rel="stylesheet" href="/style.css" />
+    <!-- import the webpage's client-side javascript file -->
+    <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"></script>
+    <script src="/script.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Overpass&display=swap">
+  </head>
+  <body class = "background">
+    <header class = "site-header">
+            <nav>
+                <div class = "logo">
+                </div>
+                <div class = "webTitle">
+                    <h1>RPS <span class="greenFormat">ONLINE</span></h1>
+                </div>
+                <div class = "menu">
+                    <ul>
+                        <li><a href="Login.html" id="registerLogin">Register/Login</a></li>
+                        <li><a href="Leaderboard_LoggedOut.html" id="leaderboard">LeaderBoard</a></li>
+                        <li><a href="HowToPlay_LoggedOut.html" id="howToPlay">How to Play</a></li>
+                    </ul>
+                </div> 
+             </nav>
+    </header>
+    <main>
+      <section>
+        <div class = "welcomeTitle" id = "welcome"></div>
+          <script>
+            const div = document.getElementById("welcome");
+            const text = "How To Play";
+            typeWriter(div, text);
+          </script>
+        <div class = "wrapper">
+          <div class = "box boxH2P" style="overflow: hidden">
+            <section class = "greenFireText">
+              <h1>1v1</h1>
+            </section>
+            <p>Go to Play Now, select 1v1, and wait for an opponent</p>
+            <p>Use your right hand to make rock, paper, or scissors</p>
+            <p>Hold up your pick until the timer runs out, then confirm or redo your pick</p>
+            <p>After the game finishes, you can play against the same oppoenent or leave</p>
+          </div>
+          <div class = "box boxH2P" style="overflow: hidden">
+            <section class = "fireText">
+              <h1>King Of The Hill</h1>
+            </section>
+            <p>Go to Play Now, select KOTH, and wait for your turn</p>
+            <p>The King is at the top of the hill, to take his throne you must beat him</p>
+            <p>The King gets to keep playing as long as he wins and takes on any opponent thrown his way</p>
+            <p>The loser gets kicked out and leaves the crown for the King</p>
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

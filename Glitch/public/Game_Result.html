@@ -1,0 +1,84 @@
+<!-- This is a static file -->
+<!-- served from your routes in server.js -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>RPS Online - Login</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="A cool thing made with Glitch" />
+    <link
+      id="favicon"
+      rel="icon"
+      href="https://cdn.glitch.global/4da04694-6b54-466e-a058-2a6f0886da40/RPS.png?v=1713324675470"
+      type="image/x-icon"
+    />
+
+    <!-- import the webpage's stylesheet -->
+    <link rel="stylesheet" href="/style.css" />
+    <!-- import the webpage's client-side javascript file -->
+    <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"></script>
+    <script src="/script.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Overpass&display=swap">
+  </head>
+  <body class = "background" style="overflow: hidden">
+    <header class = "site-header">
+            <nav>
+                <div class = "logo">
+                </div>
+                <div class = "webTitle">
+                  <h1>RPS <span class="greenFormat">ONLINE</span></h1>
+                </div>
+                <div class = "menu">
+                </div> 
+             </nav>
+    </header>
+    <main>
+      <section>
+        <div class="container-container">
+          <div class="container">
+            <div class = "gameTitle" id = "yourPick" style = "text-align: center;margin: 20px 170px;">Your Pick</div>
+            <script type="text/javascript">
+              var userPick = localStorage.getItem("userPick");
+              let confirmedPick = checkPick(userPick);
+            </script>
+            <img id="userChoice" class="picture" alt="Editor illustration" title="Rock Paper Scissors"/>
+            <script type="text/javascript">
+              var imgElement = document.getElementById("userChoice");
+              //localStorage.setItem("usersChoice", confirmedPick);
+              imgElement.src = confirmedPick;
+            </script>
+          </div>
+          <div class="container">
+            <div class = "gameTitle" id = "opponentPick" style = "text-align: center;margin: 20px 150px;">Opponent's Pick</div>
+            <img id="opponentsPick"
+              class="picture"
+              alt="Editor illustration"
+              title="Rock Paper Scissors"
+            />
+            <script type="text/javascript">
+              var imgElementOpponent = document.getElementById("opponentsPick");
+              var opponentPick = localStorage.getItem("opponentPick");
+              imgElementOpponent.src = opponentPick;
+              //imgElementOpponent.src = randomPick();
+            </script>
+          </div>
+        </div>
+        <div class = "gameText" id = "gameScore" style = "text-align: center;-webkit-text-stroke: 0.25px black;"></div>
+        <script type="text/javascript">
+          var winner = checkWinner(confirmedPick, opponentPick);
+          //var winner = checkWinner(confirmedPick, random);
+          var gameScoreElement = document.getElementById("gameScore");
+          gameScoreElement.textContent = scoreString(winner);
+        </script>
+        <div class="button-container">
+          <button class = "singleButton" id = "stayButton" type = "button" onclick = "toSelectMove()" style = "margin: 30px 240px;">Stay</button>
+          <button class = "singleleaveButton" id = "leaveButton" type = "button" onclick = "toLeaderboards()" style = "margin: 30px 300px;">Leave</button>
+        </div>
+        <div class="gameTextWait" id="waitingText" style="text-align: center;-webkit-text-stroke: 0.25px black;display: none"></div>
+        <div class="gameTextWait" id="waitingLeave" style="text-align: center;-webkit-text-stroke: 0.25px black;display: none"></div>
+      </section>
+    </main>
+  </body>
+</html>

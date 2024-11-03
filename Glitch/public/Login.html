@@ -1,0 +1,75 @@
+<!-- This is a static file -->
+<!-- served from your routes in server.js -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>RPS Online - Login</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="A cool thing made with Glitch" />
+    <link
+      id="favicon"
+      rel="icon"
+      href="https://cdn.glitch.global/4da04694-6b54-466e-a058-2a6f0886da40/RPS.png?v=1713324675470"
+      type="image/x-icon"
+    />
+
+    <!-- import the webpage's stylesheet -->
+    <link rel="stylesheet" href="/style.css" />
+    <!-- import the webpage's client-side javascript file -->
+    <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"></script>
+    <script src="/script.js" defer></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Overpass&display=swap">
+  </head>
+  <body class = "background" style="overflow: hidden">
+    <header class = "site-header">
+            <nav>
+                <div class = "logo">
+                </div>
+                <div class = "webTitle">
+                    <h1>RPS <span class="greenFormat">ONLINE</span></h1>
+                </div>
+                <div class = "menu">
+                    <ul>
+                        <li><a href="Login.html" id="registerLogin">Register/Login</a></li>
+                        <li><a href="Leaderboard_LoggedOut.html" id="leaderboard">LeaderBoard</a></li>
+                        <li><a href="HowToPlay_LoggedOut.html" id="howToPlay">How to Play</a></li>
+                    </ul>
+                </div> 
+             </nav>
+    </header> 
+    <h1 class = "getStarted" id = "playHeader">LOGIN</h1>
+    <img id="image"
+         src="https://cdn.glitch.global/4da04694-6b54-466e-a058-2a6f0886da40/RPS.png?v=1713324675470"
+         class="picture"
+         alt="Editor illustration"
+         title="Rock Paper Scissors"
+    />
+    <main>
+      <div class="container">
+        <div>
+          <label class = "password-username" id="userLabel">USERNAME:</label>
+          <input type="text" id="username" class="textBoxUsername">
+        </div>
+      
+        <div>
+          <label class = "password-username" id="passLabel" >PASSWORD:</label>
+          <input type="password" id="password" class="textBoxPassword">
+        </div>
+        <div class = "loginFailText hideElement" id="failText">Incorrect Username or Password!</div>
+        <div class = "loginFailText hideElement" id="failTextUser">Username Not Found!</div>
+        <div class = "loginFailText hideElement" id="failTextTaken">Username Already Taken!</div>
+        <div class = "loginFailText hideElement" id="failTextLength">Password Must Be 7 Characters!</div>
+        <div class = "loginFailText hideElement" id="failTextCharacters">Password Missing Uppercase/Special Characters!</div>
+        <div class = "loginFailText hideElement" id="failTextMatch">Passwords Did Not Match!</div>
+        <div class = "loginFailText hideElement" id="failTextSuccess">Password Changed!</div>
+      </div>
+      <div class="button-container">
+        <button class="login-register" id = "loginLabel" onclick="sendLogin()">LOGIN</button>
+        <button class="login-register" id = "registerLabel" onclick="sendRegister()">REGISTER</button>
+      </div>
+    </main>
+    <script type="text/javascript">localStorage.clear();</script>
+  </body>
+</html>

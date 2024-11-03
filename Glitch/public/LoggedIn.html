@@ -1,0 +1,99 @@
+<!-- This is a static file -->
+<!-- served from your routes in server.js -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>RPS Online - Login</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="A cool thing made with Glitch" />
+    <link
+      id="favicon"
+      rel="icon"
+      href="https://cdn.glitch.global/4da04694-6b54-466e-a058-2a6f0886da40/RPS.png?v=1713324675470"
+      type="image/x-icon"
+    />
+
+    <!-- import the webpage's stylesheet -->
+    <link rel="stylesheet" href="/style.css" />
+    <!-- import the webpage's client-side javascript file -->
+    <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"></script>
+    <script src="/script.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Overpass&display=swap">
+  </head>
+  <body class = "background" style="overflow: hidden">
+    <header class = "site-header">
+            <nav>
+                <div class = "logo">
+                </div>
+                <div class = "webTitle">
+                    <h1>RPS <span class="greenFormat">ONLINE</span></h1>
+                </div>
+                <div class = "menu">
+                    <ul>
+                        <li><a href="Login.html" id="registerLogin">Log Out</a></li>
+                        <li><a href="Dashboard.html" id="dashboard">My Dashboard</a></li>
+                        <li><a href="Leaderboard.html" id="leaderboard">LeaderBoard</a></li>
+                       <li><a href="Play.html" id="play">Play Now</a></li>
+                        <li><a href="HowToPlay.html" id="howToPlay">How to Play</a></li>
+                    </ul>
+                </div> 
+             </nav>
+    </header>
+    <main>
+      <section>
+        <div class = "welcomeTitle" id = "welcome" style="text-align: center;"></div>
+          <script>
+            const div = document.getElementById("welcome");
+            const text = "Welcome " + localStorage.getItem("username") + "!";
+            typeWriter(div, text);
+          </script>
+        <div class = "wrapper">
+          <div class = "box boxPlay" id = "rankings">
+            <h1>National Rankings</h1>
+            <div class="player"><span class="rankFirst">1.</span><span id="player1"></span></div>
+            <div class="line"></div>
+            <div class="player"><span class="rankSecond">2.</span><span id="player2"></span></div>
+            <div class="line"></div>
+            <div class="player"><span class="rankThird">3.</span><span id="player3"></span></div>
+            <div class="line"></div>
+          </div>
+          <script type="text/javascript">
+            var rankNames = localStorage.getItem("rankNames");
+            var trim = rankNames.substring(1).replace(/null/g, '').replace(/,,/g, ',').trim(); // Remove "null" and consecutive commas
+            var split = trim.split(",").filter(Boolean); 
+            var numRanks = parseInt(localStorage.getItem("numRanks")) + 1;
+            
+            for (let i = 0; i < (numRanks - 1); i++) {
+              var playerNum = "player" + (i + 1);
+              if (i < 3) {
+                var playerNameElement = document.getElementById(playerNum);
+                playerNameElement.textContent = split[i];
+              }
+              else {
+                var dynamicPlayerDiv = document.createElement('div');
+                dynamicPlayerDiv.className = 'player';
+                dynamicPlayerDiv.textContent = (i + 1) + ". " + split[i];
+                document.getElementById('rankings').appendChild(dynamicPlayerDiv);
+                var dynamicLineDiv = document.createElement('div');
+                dynamicLineDiv.className = 'line';
+                document.getElementById('rankings').appendChild(dynamicLineDiv);
+                }
+            }
+          </script>
+          <div class = "box boxPlay">
+            <h1>RPS Online</h1>
+            <p>Play now or learn how to play!</p>
+            <div class="button-container">
+              <button class = "singleButton" id = "playNowButton" type = "button" onclick = "toPlayNow()">Play Now</button>
+            </div>
+            <div class="button-container">
+              <button class = "singleButton" id = "H2PButton" type = "button" onclick = "toH2P()">How to Play</button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

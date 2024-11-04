@@ -6,7 +6,7 @@ Our project aims to bring the classic game of Rock, Paper, Scissors into the dig
 RPS Online is a 1 v 1 online multiplayer game that detects a user's hand signals in the form of Rock, Paper, or Scissors. The user has 5 seconds to make their move and 7 seconds to confirm their move. On the results screen, both players' moves are shown with the current score. The user has the option to continue playing the same opponent or leave. Once a player has left, both users’ statistics and rankings will be updated on their respective dashboards.
 
 ## Demo
-[![image](https://github.com/user-attachments/assets/a5ddf3c8-a2bd-495f-8747-d62bcc6258f9)](https://www.youtube.com/watch?v=6dW1NibxEao&t=30s)
+[![image](https://github.com/user-attachments/assets/87b11fa5-0a03-4436-b5ec-71549bb63293)](https://www.youtube.com/watch?v=6dW1NibxEao&t=30s)
 
 ## System Architecture
 ![image](https://github.com/user-attachments/assets/5f59d915-04b8-407d-b649-7e5131ee3d4b)

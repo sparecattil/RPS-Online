@@ -836,4 +836,3 @@ function deleteAccount() {
   socket.emit('deleteAccount',{ID : localStorage.getItem("queueID"), username : localStorage.getItem("username"), rank : localStorage.getItem("userRank")});
   window.location.href="Login.html";
 }
-

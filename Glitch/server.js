@@ -1,8 +1,3 @@
-// server.js
-// where your node app starts
-
-// we've started you off with Express (https://expressjs.com/)
-// but feel free to use whatever libraries or frameworks you'd like through `package.json`.
 const express = require("express");
 const app = express();
 const socket = require("socket.io");
@@ -23,21 +18,18 @@ const bodyParser = require('body-parser');
 
 app.use(bodyParser.json());
 
-// Log endpoint for Beacon API
-
-//Serve Login.html as default route - DONT DELETE - SHIV
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "Login.html"));
 });
 
 app.use(express.static(path.join(__dirname, "public")));
 
-// listen for requests :)
+// Listening for requests
 const listener = app.listen(process.env.PORT, () => {
   console.log("Your app is listening on port " + listener.address().port);
 });
 
-const io = socket( listener ); //Test---
+const io = socket( listener );
 
 io.on( "connection",function (socket)
 {
@@ -46,21 +38,16 @@ io.on( "connection",function (socket)
       if (req.body.ID % 2 == 1) {
         if (idInQueue[parseInt(req.body.ID) + 1] == "YES") {
           idInQueue[parseInt(req.body.ID) + 1] = "NO";
-          //io.to(playerMaster[parseInt(req.body.ID) + 1]).emit('playerLeftGame',{});
         }
         else if (queueCount != 0) {
           //queueCount--;
         }
-        //io.to(raspID).emit('updateClosed',{one : req.body.ID, two : parseInt(req.body.ID) + 1});
       }
       else if (req.body.ID % 2 == 0) {
         idInQueue[parseInt(req.body.ID) - 1] = "NO";
-        //io.to(playerMaster[parseInt(req.body.ID) - 1]).emit('playerLeftGame',{});
-        //io.to(raspID).emit('updateClosed',{one : parseInt(req.body.ID) - 1, two : req.body.ID});
       }
     }
     idInQueue[req.body.ID] = "NO";
-    //console.log("Closed" + (req.body.ID + 1));
   
     res.sendStatus(200);
   });
@@ -132,17 +119,12 @@ io.on( "connection",function (socket)
   
   socket.on ( 'updateRank', function(data)
   {
-    //console.log("Update Rank Log");
-    //console.log(data);
-    //console.log(data.ranks[1]);
     io.except(raspID).emit('updateRank',data);
   });
   
   socket.on ( 'updatePersonalRank', function(data)
   {
-    //io.emit('updatePersonalRank',data);
     io.to(data.clientID).emit('updatePersonalRank',data);
-    //console.log(data);
   });
   
   socket.on ( 'updateLeaderboardStats', function(data)
@@ -153,7 +135,6 @@ io.on( "connection",function (socket)
   
   socket.on ( 'leavingGame', function(data)
   {
-    //stayPick[data.ID] = "NO";
     idInQueue[data.ID] = "NO";
     io.to(raspID).emit('updateDashboard',data);
     io.to(raspID).emit('updateStay',{ID : data.ID});
@@ -173,12 +154,10 @@ io.on( "connection",function (socket)
       
     }
     else if (data.ID % 2 == 1) {
-      //queueCount++; //Check
       socket.join('room' + data.ID);
       playerMaster[data.ID] = data.clientID;
     }
     else if (data.ID % 2 == 0) {
-      //queueCount++; //Check
       socket.join('room' + (data.ID - 1));
       playerMaster[data.ID] = data.clientID;
     }
@@ -192,8 +171,6 @@ io.on( "connection",function (socket)
     io.to(data.clientID).emit('setQueueID',{number : queueCount});
     idInQueue[queueCount] = "YES";
     console.log(idInQueue);
-    //stayPick[queueCount] = "NO";
-    //confirmPick[queueCount] = "NO";
     if (queueCount % 2 == 1) {
       socket.join('room' + queueCount);
       playerMaster[queueCount] = data.clientID;
@@ -219,39 +196,11 @@ io.on( "connection",function (socket)
   {
     io.to(playerMaster[parseInt(data.IDOne)]).emit('roomData',{opponentMost : data.IDTwoMost, opponentLeast : data.IDTwoLeast});
     io.to(playerMaster[parseInt(data.IDTwo)]).emit('roomData',{opponentMost : data.IDOneMost, opponentLeast : data.IDOneLeast});
-    //io.to('room' + (parseInt(data.IDTwo) - 1)).emit('selectMoveScreen',{});
   });
   
   socket.on ( 'pickConfirmed', function(data)
   {
     io.to(raspID).emit('pickConfirmed',data);
-    /*
-    confirmPick[data.ID] = "YES";
-    if (data.ID % 2 == 1) {
-      if (confirmPick[data.ID] == "YES" && confirmPick[data.ID + 1] == "YES") {
-        confirmPick[data.ID] = "NO";
-        confirmPick[data.ID + 1] = "NO";
-      }
-      io.to(playerMaster[parseInt(data.ID) + 1]).emit('opponentPick',data);
-      if (confirmPick[data.ID] == "NO" && confirmPick[data.ID + 1] == "NO") {
-        setTimeout(function(){
-          io.to("room" + data.ID).emit('bothPicksHaveBeenMade',{});
-        },3000);
-      }
-    }
-    else if (data.ID % 2 == 0) {
-      if (confirmPick[data.ID] == "YES" && confirmPick[data.ID - 1] == "YES") {
-        confirmPick[data.ID] = "NO";
-        confirmPick[data.ID - 1] = "NO";
-      }
-      io.to(playerMaster[parseInt(data.ID) - 1]).emit('opponentPick',data);
-      if (confirmPick[data.ID] == "NO" && confirmPick[data.ID - 1] == "NO") {
-        setTimeout(function(){
-          io.to("room" + (parseInt(data.ID) - 1)).emit('bothPicksHaveBeenMade',{});
-        },3000);
-      }
-    }
-    */
   });
   
   socket.on ( 'opponentPick', function(data)
@@ -270,27 +219,6 @@ io.on( "connection",function (socket)
   {
     console.log("Stay Pressed");
     io.to(raspID).emit('stayPressed',data);
-    /*
-    stayPick[data.ID] = "YES";
-    if (data.ID % 2 == 1) {
-      if (stayPick[data.ID] == "YES" && stayPick[data.ID + 1] == "YES") {
-        setTimeout(function(){
-          stayPick[data.ID] = "NO";
-          stayPick[data.ID + 1] = "NO";
-          io.to("room" + data.ID).emit('bothStaysHaveBeenMade',{});
-        },3000);
-      }
-    }
-    else if (data.ID % 2 == 0) {
-      if (stayPick[data.ID] == "YES" && stayPick[data.ID - 1] == "YES") {
-        setTimeout(function(){
-          stayPick[data.ID] = "NO";
-          stayPick[data.ID - 1] = "NO";
-          io.to("room" + (parseInt(data.ID) - 1)).emit('bothStaysHaveBeenMade',{});
-        },3000);
-      }
-    }
-    */
   });
   
   socket.on ( 'bothStayed', function(data)
@@ -299,16 +227,6 @@ io.on( "connection",function (socket)
         io.to("room" + data.ID).emit('bothStaysHaveBeenMade',{});
     },3000);
   });
-  
-  /*
-  socket.on( 'disconnect', function ( data ){
-    for (var key in playerMaster) {
-      if (playerMaster[key] == socket.id) {
-        queueCount--; //Check
-      }
-    }
-  });
-  */
   
   socket.on( 'password', function ( data ){
     io.to(raspID).emit('updatePassword',data);

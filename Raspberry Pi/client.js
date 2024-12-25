@@ -1,30 +1,26 @@
-//var firebase = require( 'firebase/app' );
+// Use Socket IO Client for Glitch
 const io = require ('socket.io-client');
-//const { getDatabase, ref, onValue, set, update, get, push, remove} = require('firebase/database');
-// const firebaseConfig = {
-//     apiKey: "AIzaSyBA9EKtuzzt8emK25-v3qwNld1xZ99LnfI",
-//     authDomain: "lab2-a3c4f.firebaseapp.com",
-//     databaseURL: "https://lab2-a3c4f-default-rtdb.firebaseio.com",
-//     projectId: "lab2-a3c4f",
-//     storageBucket: "lab2-a3c4f.appspot.com",
-//     messagingSenderId: "901080186511",
-//     appId: "1:901080186511:web:3ab394dd8d27faa353fafa",
-//     measurementId: "G-WLFNCW56LX"
-//   };
-// firebase.initializeApp( firebaseConfig );
 
+// Require Admin
 var admin = require("firebase-admin");
+// Require JSON for Admin Credentials
 var serviceAccount = require("/home/pi/Desktop/finalProject/lab2-a3c4f-firebase-adminsdk-zo0gc-5a8d7388fb.json");
 
+// Initilaization for Admin Credential Firebase
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
   databaseURL: "https://lab2-a3c4f-default-rtdb.firebaseio.com"
 });
 
-const db = admin.database(); // Database parameter
+// Database parameter
+const db = admin.database();
+
+// Database Reference
 const database = db.ref();
 
+// User COunt Initial
 var totalCount = 3;
+
 //Dictionary holding base values
 const initialDict = {
     "PlayerCount": 3,
@@ -84,15 +80,29 @@ const initialDict = {
         1: 'No'
     }
 }
-  
-//set(ref(database), initialDict);
+// Set dictionary in Firebase
 database.set(initialDict);
 
+// Get Socket from Glitch Site
 let socket = io('https://chivalrous-brass-gourd.glitch.me');
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Name: connect() (socket event handler) 
+// Inputs: None
+// Description: This function is triggered when the socket successfully connects. It emits a 'piID' event with the 
+//              socket's unique ID (socket.id), which is used to identify the Raspberry Pi in the system.
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 socket.on('connect', function() {
     socket.emit('piID', {ID: socket.id});
 });
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Name: usernameID() (socket event handler) 
+// Inputs: data (object containing the username and client ID)
+// Description: This function updates the 'users' node in the database with the socket ID associated with a given username. 
+//              If the username does not already exist in the database, a new entry is created. After updating the socket ID, 
+//              it triggers the rankUpdate() function to refresh the rankings.
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 socket.on('usernameID', function(data) {
     console.log(data.username);
     if (data.username == null) {
@@ -110,6 +120,12 @@ socket.on('usernameID', function(data) {
     rankUpdate();
 });
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Name: updateQueue() (socket event handler) 
+// Inputs: data (object containing the user's queue ID and username)
+// Description: This function updates the 'Queue' in the database by setting the specified queue ID to the given username. 
+//              It is triggered when a user joins or is placed in a specific queue, updating the queue with their username.
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 socket.on("updateQueue", function(data){
     const ID = data.queueID;
     const username = data.username;
@@ -118,6 +134,13 @@ socket.on("updateQueue", function(data){
     })
 });
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Name: updateConfirm() (socket event handler)
+// Inputs: data (object containing the user's queue ID)
+// Description: This function updates the 'confirmedQueue' in the database, setting the provided user's queue ID to "No" 
+//              to indicate that they have not confirmed. It is triggered when a user opts out or changes their confirmation 
+//              status, updating the queue status accordingly.
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 socket.on("updateConfirm", function(data){
     const ID = data.queueID;
     database.child('confirmedQueue').update({
@@ -125,6 +148,13 @@ socket.on("updateConfirm", function(data){
     })
 });
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Name: updateStay() (socket event handler)
+// Inputs: data (object containing the user's queue ID)
+// Description: This function updates the 'stayQueue' in the database, setting the provided user's queue ID to "No" 
+//              to indicate that they no longer wish to stay. It is triggered when a user opts out or changes their stay 
+//              status, updating the queue status accordingly.
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 socket.on("updateStay", function(data){
     const ID = data.queueID;
     database.child('stayQueue').update({
@@ -132,6 +162,14 @@ socket.on("updateStay", function(data){
     })
 });
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Name: pickConfirmed() (socket event handler)
+// Inputs: data (object containing the user's ID and their pick choice)
+// Description: This function updates the 'confirmedQueue' in the database to mark the current user's pick as confirmed 
+//              by setting their corresponding queue ID to "Yes." It then calls the function 'checkOpponentConfirmed' 
+//              to check if both users in the current pair have confirmed their choices. If both users have confirmed, 
+//              the function will notify the clients of the confirmation and update their statuses accordingly.
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 socket.on('pickConfirmed', function(data){
     const queueID = data.ID;
     const opponentPick = data.pick;
@@ -141,6 +179,16 @@ socket.on('pickConfirmed', function(data){
     checkOpponentConfirmed(queueID, opponentPick);
 });
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Name: checkOpponentConfirmed()
+// Inputs: ID (integer representing the ID of the user in the confirmed queue), opponentPick (string representing the opponent's choice)
+// Description: This function checks if both users in a pair of queue positions have confirmed their choices. It retrieves the 
+//              'confirmedQueue' data from the database and checks the current user (with ID) and their opponent (ID +/- 1) 
+//              to see if both have selected "Yes" to confirm their choices. If both have confirmed, it sends a "bothConfirmed" 
+//              event to the client and updates the 'confirmedQueue' to set both users' statuses to "No" (indicating they no longer 
+//              need to confirm). The function also sends the opponent's pick to the current user using the "opponentPick" event. 
+//              It handles both even and odd numbered IDs to correctly check adjacent users.
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function checkOpponentConfirmed(ID, opponentPick){
     const queue = database.child('confirmedQueue');
     queue.once('value', (snapshot) => {
@@ -167,6 +215,15 @@ function checkOpponentConfirmed(ID, opponentPick){
     });
 }
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Name: stayPressed (socket event handler)
+// Inputs: data (object containing the queueID of the user who pressed "stay")
+// Description: This function listens for the "stayPressed" event from the client, which includes the queueID of the user who 
+//              decided to stay in the game. It updates the 'stayQueue' in the database, setting the value for the user's queueID 
+//              to 'Yes'. After updating the stayQueue, it calls the checkOpponentStay function to verify if the current user and 
+//              their opponent both wish to stay. If both users have selected "Yes", it triggers further actions like sending 
+//              relevant notifications to the client.
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 socket.on('stayPressed', function(data){
     const queueID = data.ID;
     database.child('stayQueue').update({
@@ -174,6 +231,17 @@ socket.on('stayPressed', function(data){
     })
     checkOpponentStay(queueID);
 });
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Name: checkOpponentStay()
+// Inputs: ID (integer representing the ID of the user in the stay queue)
+// Description: This function checks if both users in a pair of queue positions have selected "Yes" to stay in the game. 
+//              It first retrieves the 'stayQueue' data from the database and checks the status of the current user (with ID)
+//              and their opponent (ID +/- 1). If both users have selected "Yes" to stay, it sends a "bothStayed" event to the 
+//              client, indicating that both players have agreed to stay. The function then updates the 'stayQueue' to mark 
+//              both players as "No" (indicating that they no longer wish to stay in the game). It handles both even and odd 
+//              numbered IDs to check adjacent users correctly.
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 function checkOpponentStay(ID) {
     const queue = database.child('stayQueue');
@@ -199,6 +267,16 @@ function checkOpponentStay(ID) {
     });
 }
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Name: requestOpponent (socket event handler)
+// Inputs: data (object containing the queueID of the user requesting an opponent)
+// Description: This function listens for the "requestOpponent" event from the client, which contains the queueID of the 
+//              user looking for an opponent. It checks the 'Queue' node in the database for both the current user's and 
+//              the opponent's usernames by referencing the queueID and the secondID (previous queue). Once both usernames 
+//              are retrieved, it queries the 'users' node for additional user data (most and least used choices). The function 
+//              then sends a "sendRoomData" event to the client with the relevant user data for both players (most and least used 
+//              choices), as well as their queueIDs.
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 socket.on('requestOpponent', function(data) {
     const secondID = parseInt(data.queueID) - 1;
     const checkQueueOne = database.child('Queue').child(data.queueID);
@@ -225,6 +303,16 @@ socket.on('requestOpponent', function(data) {
     });
 });
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Name: login (socket event handler)
+// Inputs: Data (object containing the username, password, and clientID of the user attempting to log in)
+// Description: This function listens for the "login" event from the client, which includes the username and password. 
+//              It first checks if the username exists in the 'users' node of the database. If the username doesn't exist, 
+//              it sends a "registrationNeeded" event to the client. If the username exists, it compares the provided password 
+//              with the stored password. If the passwords match, it sends a "loginSuccessful" event with the user's details, 
+//              including their win, loss, total games, win rate, most and least used choices, and rank. It also triggers the 
+//              rankUpdate function. If the passwords do not match, it sends an "incorrectUP" event to the client.
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 socket.on('login', function(data) {
     const username = data.username;
     const password = data.password;
@@ -243,7 +331,16 @@ socket.on('login', function(data) {
     });
 });
 
-
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Name: updatePassword (socket event handler)
+// Inputs: data (object containing the username, new password, confirmed password, and clientID of the user)
+// Description: This function listens for the "updatePassword" event from the client, which includes the username, 
+//              new password, and confirmed password for updating. It first checks if the new password and confirmed password 
+//              match. Then, it verifies that the new password meets the criteria (at least 7 characters, contains an uppercase 
+//              letter, and contains a non-alphanumeric character). If all conditions are met, the password is updated in the 
+//              database and a "passwordSuccess" event is sent to the client. If any condition is not met, the corresponding 
+//              error event is emitted to the client (e.g., "passwordMatch", "passwordCharacters", or "passwordLength").
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 socket.on('updatePassword', function(data) {
     const username = data.username;
     const passwordNew = data.passwordNew;
@@ -265,6 +362,20 @@ socket.on('updatePassword', function(data) {
         socket.emit('passwordMatch', {clientID: data.clientID});
     }
 });
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Name: register (socket event handler)
+// Inputs: data (object containing the username, password, and clientID of the user attempting to register)
+// Description: This function listens for the "register" event from the client, which contains the username and password 
+//              for registration. It first checks if the username is already taken by querying the 'users' node in the 
+//              database. If the username exists, it sends a "usernameTaken" event to the client. If the password meets 
+//              the criteria (at least 7 characters, contains an uppercase letter, and contains a non-alphanumeric character), 
+//              the new user is registered by adding their information to the 'users' node and updating the player count in the 
+//              database. A "registerSuccessful" event is sent to the client with the user's details. If the password does 
+//              not meet the criteria, the appropriate error event ("passwordCharacters" or "passwordLength") is emitted to the 
+//              client.
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 socket.on('register', function(data) {
     const username = data.username;
@@ -306,6 +417,15 @@ socket.on('register', function(data) {
     });
 });
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Name: deleteAccount (socket event handler)
+// Inputs: data (object containing the username, queueID, and rank of the user to be deleted)
+// Description: This function listens for the "deleteAccount" event from the client, which includes the username, 
+//              queueID, and rank of the user requesting deletion. If the user is in a queue, their entry is removed 
+//              from the 'Queue' node. If the user's rank is greater than 3, their data is removed from both the 'users' 
+//              and 'Rank' nodes in the database. The total player count is then decreased by 1 and updated in the 'PlayerCount' 
+//              node.
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 socket.on('deleteAccount', function(data){
     const username = data.username;
     const queueID = data.ID;
@@ -323,6 +443,14 @@ socket.on('deleteAccount', function(data){
     });
 });
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Name: updateDashboard (socket event handler)
+// Inputs: data (object containing the user's updated statistics)
+// Description: This function listens for the "updateDashboard" event from the client, which contains updated statistics 
+//              for a specific user (such as wins, losses, total games, win rate, and usage of rock, paper, and scissors). 
+//              It then updates the user's data in the 'users' node in the database with the new values. After updating the 
+//              user data, it triggers the rankUpdate function to refresh the rankings and update the leaderboard.
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 socket.on("updateDashboard", function(data){
     const username = data.username;
     const win = data.win;
@@ -348,6 +476,15 @@ socket.on("updateDashboard", function(data){
     rankUpdate();
 });
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Name: rankUpdate()
+// Inputs: None
+// Description: This function retrieves user data from the 'users' node in the database and processes the users' wins to 
+//              create an array of rankings. The array is sorted by the number of wins in descending order. It then updates 
+//              the 'Ranks' node with the sorted user rankings and updates each user's rank in the 'users' node. After updating 
+//              the rankings, it triggers functions to send updated rankings to all clients ('sendRankForAll'), send 
+//              individual user ranks ('sendRankPersonal'), and update the leaderboard ('sendLeaderboard').
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function rankUpdate(){
     database.child('users').once('value', (snapshot) => {
         const userData = snapshot.val();
@@ -373,6 +510,13 @@ function rankUpdate(){
     sendLeaderboard();
 }
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Name: sendRankForAll()
+// Inputs: None
+// Description: This function retrieves the rankings from the 'Ranks' node in the database. It then emits an "updateRank" 
+//              event to the client, sending the entire rankings data along with the total count of users. This allows the 
+//              client to update and display the global rankings for all users.
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function sendRankForAll(){
     database.child('Ranks').once('value', (snapshot) => {
         const rankings = snapshot.val();
@@ -380,6 +524,13 @@ function sendRankForAll(){
     });
 }
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Name: sendRankPersonal()
+// Inputs: None
+// Description: This function retrieves all user data from the 'users' node in the database. It then iterates through the 
+//              data and for each user, it emits an "updatePersonalRank" event to the client, sending the user's socket ID 
+//              and their rank to the client. This allows the client to update and display the individual user's rank.
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function sendRankPersonal(){
     database.child('users').once('value', (snapshot) => {
         const userData = snapshot.val();
@@ -389,6 +540,16 @@ function sendRankPersonal(){
     });
 }
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Name: sendLeaderboard()
+// Inputs: None
+// Description: This function retrieves the top three players' rankings from the 'Ranks' node in the database.
+//              It iterates through the rankings and adds the top three players to an array (`topThree`), skipping
+//              any 'null' entries. After determining the top three players, it retrieves additional user statistics 
+//              (like wins, total games, win rate, etc.) from the 'users' node in the database. It then sends this data 
+//              to the client through a socket event "updateLeaderboardStats", which includes detailed statistics for 
+//              the top three players (such as wins, total games played, and various other metrics).
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function sendLeaderboard() {
     database.child('Ranks').once('value', (snapshot) => {
         const topThree = [];
